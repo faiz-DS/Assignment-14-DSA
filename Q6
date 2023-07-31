@@ -1,0 +1,84 @@
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def left_shift_linked_list(head, k):
+    if not head or k == 0:
+        return head
+
+    # Step 1: Find the length of the linked list
+    length = 0
+    current = head
+    while current:
+        length += 1
+        current = current.next
+
+    # Calculate the new head position
+    k = k % length
+
+    if k == 0:
+        return head
+
+    # Step 2: Traverse to the (N - k)th node
+    current = head
+    for _ in range(length - k - 1):
+        current = current.next
+
+    # Step 3: Update the next pointer of the (N - k)th node to None
+    new_head = current.next
+    current.next = None
+
+    # Step 4: Traverse to the last node of the original list
+    current = new_head
+    while current.next:
+        current = current.next
+
+    # Step 5: Make the (N - k + 1)th node the new head
+    current.next = head
+
+    return new_head
+
+# Helper function to create a linked list from a list of values
+def create_linked_list(values):
+    head = None
+    tail = None
+    for val in values:
+        new_node = ListNode(val)
+        if not head:
+            head = new_node
+            tail = new_node
+        else:
+            tail.next = new_node
+            tail = new_node
+    return head
+
+# Helper function to print linked list elements for verification
+def print_linked_list(head):
+    current = head
+    while current:
+        print(current.val, end=" -> ")
+        current = current.next
+    print("None")
+
+# Test Cases
+if __name__ == "__main__":
+    # Example 1
+    values1 = [2, 4, 7, 8, 9]
+    k1 = 3
+    head1 = create_linked_list(values1)
+    print("Example 1 Before:")
+    print_linked_list(head1)
+    head1 = left_shift_linked_list(head1, k1)
+    print("Example 1 After:")
+    print_linked_list(head1)
+
+    # Example 2
+    values2 = [1, 2, 3, 4, 5, 6, 7, 8]
+    k2 = 4
+    head2 = create_linked_list(values2)
+    print("Example 2 Before:")
+    print_linked_list(head2)
+    head2 = left_shift_linked_list(head2, k2)
+    print("Example 2 After:")
+    print_linked_list(head2)

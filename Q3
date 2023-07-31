@@ -1,0 +1,83 @@
+class ListNode:
+    def __init__(self, val=0, next=None, bottom=None):
+        self.val = val
+        self.next = next
+        self.bottom = bottom
+
+def merge_lists(head1, head2):
+    dummy = ListNode()
+    current = dummy
+
+    while head1 and head2:
+        if head1.val < head2.val:
+            current.bottom = head1
+            head1 = head1.bottom
+        else:
+            current.bottom = head2
+            head2 = head2.bottom
+        current = current.bottom
+
+    if head1:
+        current.bottom = head1
+    else:
+        current.bottom = head2
+
+    return dummy.bottom
+
+def flatten_linked_list(head):
+    if not head or not head.next:
+        return head
+
+    # Recursively flatten the rest of the linked list
+    head.next = flatten_linked_list(head.next)
+
+    # Merge the current and next nodes' bottom linked lists
+    head = merge_lists(head, head.next)
+
+    return head
+
+# Helper function to create a linked list from a list of values
+def create_linked_list(values):
+    head = None
+    tail = None
+    for val in values:
+        new_node = ListNode(val)
+        if not head:
+            head = new_node
+            tail = new_node
+        else:
+            tail.bottom = new_node
+            tail = new_node
+    return head
+
+# Helper function to print linked list elements for verification
+def print_linked_list(head):
+    current = head
+    while current:
+        print(current.val, end=" -> ")
+        current = current.bottom
+    print("None")
+
+# Test Cases
+if __name__ == "__main__":
+    # Example 1
+    head1 = create_linked_list([5, 10, 19, 28])
+    head1.next = create_linked_list([7, 20, 22, 35])
+    head1.next.next = create_linked_list([8, 50])
+    head1.next.next.next = create_linked_list([30, 40, 45])
+    print("Example 1 Before:")
+    print_linked_list(head1)
+    head1 = flatten_linked_list(head1)
+    print("Example 1 After:")
+    print_linked_list(head1)
+
+    # Example 2
+    head2 = create_linked_list([5, 10, 19, 28])
+    head2.next = create_linked_list([7, 22])
+    head2.next.next = create_linked_list([8, 50])
+    head2.next.next.next = create_linked_list([30])
+    print("Example 2 Before:")
+    print_linked_list(head2)
+    head2 = flatten_linked_list(head2)
+    print("Example 2 After:")
+    print_linked_list(head2)

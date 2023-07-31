@@ -1,0 +1,74 @@
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def remove_zero_sum_sublists(head):
+    dummy = ListNode(0)
+    dummy.next = head
+    stack = [(0, dummy)]  # Initialize the stack with a dummy node and cumulative sum 0
+
+    # Calculate cumulative sum and store in the stack
+    current = head
+    cumulative_sum = 0
+    while current:
+        cumulative_sum += current.val
+        stack.append((cumulative_sum, current))
+        current = current.next
+
+    # Traverse the stack and remove nodes with the same cumulative sum
+    seen_cumulative_sums = set()
+    while stack:
+        cumulative_sum, node = stack.pop()
+        if cumulative_sum in seen_cumulative_sums:
+            node.next = node.next.next
+        else:
+            seen_cumulative_sums.add(cumulative_sum)
+
+    return dummy.next
+
+# Helper function to create a linked list from a list of values
+def create_linked_list(values):
+    head = None
+    tail = None
+    for val in values:
+        new_node = ListNode(val)
+        if not head:
+            head = new_node
+            tail = new_node
+        else:
+            tail.next = new_node
+            tail = new_node
+    return head
+
+# Helper function to convert the linked list to a list for verification
+def linked_list_to_list(head):
+    result = []
+    current = head
+    while current:
+        result.append(current.val)
+        current = current.next
+    return result
+
+# Test Cases
+if __name__ == "__main__":
+    # Example 1
+    values1 = [1, 2, -3, 3, 1]
+    head1 = create_linked_list(values1)
+    print("Example 1 Before:", linked_list_to_list(head1))
+    head1 = remove_zero_sum_sublists(head1)
+    print("Example 1 After:", linked_list_to_list(head1))
+
+    # Example 2
+    values2 = [1, 2, 3, -3, 4]
+    head2 = create_linked_list(values2)
+    print("Example 2 Before:", linked_list_to_list(head2))
+    head2 = remove_zero_sum_sublists(head2)
+    print("Example 2 After:", linked_list_to_list(head2))
+
+    # Example 3
+    values3 = [1, 2, 3, -3, -2]
+    head3 = create_linked_list(values3)
+    print("Example 3 Before:", linked_list_to_list(head3))
+    head3 = remove_zero_sum_sublists(head3)
+    print("Example 3 After:", linked_list_to_list(head3))
